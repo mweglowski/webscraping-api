@@ -14,7 +14,12 @@ const app = express();
 
 app.use(morgan("dev"));
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000", "https://your-vercel-app.vercel.app"],
+  methods: ["GET"],
+  allowedHeaders: ["Content-Type"]
+}));
+
 app.use(express.json());
 
 app.get("/", async (req, res) => {
@@ -31,8 +36,7 @@ app.get("/", async (req, res) => {
       const link = $(element).find("h2.post-title a").attr("href");
 
       // Update image URL to use the proxy endpoint
-      const proxyImageUrl = `https://webscraper-api.vercel.app/proxy-image?url=${encodeURIComponent(imageSrc)}`;
-      // const proxyImageUrl = `http://localhost:5000/proxy-image?url=${encodeURIComponent(imageSrc)}`;
+      const proxyImageUrl = `${req.protocol}://${req.get('host')}/proxy-image?url=${encodeURIComponent(imageSrc)}`;
 
       data.push({ imageSrc: proxyImageUrl, title, link });
     });
