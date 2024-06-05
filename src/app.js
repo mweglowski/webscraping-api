@@ -30,7 +30,11 @@ app.get("/", async (req, res) => {
       const title = $(element).find("h2.post-title a").text();
       const link = $(element).find("h2.post-title a").attr("href");
 
-      data.push({ imageSrc, title, link });
+      // Update image URL to use the proxy endpoint
+      const proxyImageUrl = `https://webscraper-api.vercel.app/proxy-image?url=${encodeURIComponent(imageSrc)}`;
+      // const proxyImageUrl = `http://localhost:5000/proxy-image?url=${encodeURIComponent(imageSrc)}`;
+
+      data.push({ imageSrc: proxyImageUrl, title, link });
     });
 
     res.json({
@@ -40,6 +44,26 @@ app.get("/", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error occurred during web scraping" });
+  }
+});
+
+app.get("/proxy-image", async (req, res) => {
+  try {
+    const imageUrl = req.query.url;
+    if (!imageUrl) {
+      return res.status(400).json({ message: "Image URL is required" });
+    }
+
+    const response = await axios({
+      url: imageUrl,
+      responseType: "stream",
+    });
+
+    res.setHeader("Content-Type", response.headers["content-type"]);
+    response.data.pipe(res);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error occurred during image proxying" });
   }
 });
 
