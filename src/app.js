@@ -14,10 +14,12 @@ const app = express();
 
 app.use(morgan("dev"));
 app.use(helmet());
+
+// Adjust allowed origins based on your needs
 app.use(cors({
-  origin: ["http://localhost:3000", "https://your-vercel-app.vercel.app"],
+  origin: ["http://localhost:3000", "https://webscraper-api.vercel.app"],
   methods: ["GET"],
-  allowedHeaders: ["Content-Type"]
+  allowedHeaders: ["Content-Type"],
 }));
 
 app.use(express.json());
@@ -51,6 +53,7 @@ app.get("/", async (req, res) => {
   }
 });
 
+// Proxy route for HTTP images
 app.get("/proxy-image", async (req, res) => {
   try {
     const imageUrl = req.query.url;
@@ -64,6 +67,9 @@ app.get("/proxy-image", async (req, res) => {
     });
 
     res.setHeader("Content-Type", response.headers["content-type"]);
+    res.setHeader("Access-Control-Allow-Origin", "*"); // Allow CORS for all origins
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Access-Control-Allow-Methods", "GET");
     response.data.pipe(res);
   } catch (error) {
     console.error(error);
