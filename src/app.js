@@ -18,13 +18,13 @@ app.use(express.json());
 
 app.get("/", async (req, res) => {
   try {
-    const response = await axios.get("https://rs-real-estate.nieruchomosci-online.pl/");
+    const response = await axios.get("https://rynekpierwotny.pl/s/nowe-mieszkania-i-domy-warszawa/");
     const html = response.data;
     const $ = cheerio.load(html);
 
     const data = [];
 
-    $("ul.thumb-slider li").each((index, element) => {
+    $("div.rp-trzvq1").each((index, element) => {
       const imageSrc = $(element).find("img").attr("src");
       // const title = $(element).find("h2.post-title a").text();
       // const link = $(element).find("h2.post-title a").attr("href");
