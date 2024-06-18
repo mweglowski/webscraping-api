@@ -47,22 +47,22 @@ app.get("/", async (req, res) => {
   //   res.status(500).json({ message: "Error occurred during web scraping", error: error.message });
   // }
   try {
-    const response = await axios.get(
-      "https://rynekpierwotny.pl/s/nowe-mieszkania-i-domy-warszawa/"
-    );
-    // const response = await axios.get("http://deslux.pl/");
+    // const response = await axios.get(
+    //   "https://rynekpierwotny.pl/s/nowe-mieszkania-i-domy-warszawa/"
+    // );
+    const response = await axios.get("http://deslux.pl/");
     const html = response.data;
     const $ = cheerio.load(html);
 
     const data = [];
     console.log("siema");
 
-    $("div.rp-trzvq1").each((index, element) => {
+    // $("div.rp-trzvq1").each((index, element) => {
+    //   const imageSrc = $(element).find("img").attr("src");
+    //   const title = $(element).find("h2.post-title a").text();
+    //   const link = $(element).find("h2.post-title a").attr("href");
+    $("div.post-media").each((index, element) => {
       const imageSrc = $(element).find("img").attr("src");
-      const title = $(element).find("h2.post-title a").text();
-      const link = $(element).find("h2.post-title a").attr("href");
-      // $("div.post-media").each((index, element) => {
-      //   const imageSrc = $(element).find("img").attr("src");
 
       data.push({ imageSrc });
     });
